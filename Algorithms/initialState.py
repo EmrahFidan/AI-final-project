@@ -54,13 +54,13 @@ class Node:
 def astar_search(problem):
     start_time = time.time()
     node = Node(problem.initial)
-    frontier = [(problem.h(node.state), node)]
+    frontier = [(problem.h(node.state), node)]  # Priority queue for nodes, ordered by heuristic value
     explored = set()
     while frontier:
-        _, node = heapq.heappop(frontier)
+        _, node = heapq.heappop(frontier)  # Get the node with the lowest heuristic value
         if problem.goal_test(node.state):
             end_time = time.time()
-            return node, end_time - start_time
+            return node, end_time - start_time  # Return the goal node and elapsed time
         explored.add(node.state)
         for action in problem.actions(node.state):
             child = Node(action, node, action, node.path_cost + 1)
@@ -74,6 +74,7 @@ def astar_search(problem):
     return None, 0
 
 def solution(node):
+    # Retrieve the solution path from the goal node
     actions = []
     while node.parent:
         actions.append(node.action)
