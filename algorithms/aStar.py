@@ -56,11 +56,20 @@ def astar_search(problem):
     node = Node(problem.initial)
     frontier = [(problem.h(node.state), node)]  # Priority queue for nodes, ordered by heuristic value
     explored = set()
+    num_expanded = 0
     while frontier:
         _, node = heapq.heappop(frontier)  # Get the node with the lowest heuristic value
+        num_expanded += 1
         if problem.goal_test(node.state):
-            end_time = time.time()
-            return node, end_time - start_time  # Return the goal node and elapsed time
+            duration = f"{time.time() - start_time:.4f}"
+            solution_depth = node.depth
+            solution_path_cost = node.path_cost
+            print("\nSolution completed in {} steps.".format(solution_path_cost))
+            print("\nNodes Expanded:", num_expanded)
+            print("\nSolution Depth:", solution_depth)
+            print("\nPath Cost:", solution_path_cost)
+            print("\nTime taken:.", duration, "seconds")
+            return node, duration  # Return the goal node and elapsed time
         explored.add(node.state)
         for action in problem.actions(node.state):
             child = Node(action, node, action, node.path_cost + 1)
@@ -86,30 +95,12 @@ class TestEightPuzzle(unittest.TestCase):
 
     def test_eight_puzzle(self):
         initial_state, goal_state = get_initial_and_goal_states()
-        
-        print("Initial State:")
-        print("|".join(map(str, initial_state[:3])))
-        print("|".join(map(str, initial_state[3:6])))
-        print("|".join(map(str, initial_state[6:])))
-
-        print("\nGoal State:")
-        print("|".join(map(str, goal_state[:3])))
-        print("|".join(map(str, goal_state[3:6])))
-        print("|".join(map(str, goal_state[6:])))
 
         problem = EightPuzzle(initial_state)
         goal_node, duration = astar_search(problem)
         
         self.assertIsNotNone(goal_node)
         solution_actions = solution(goal_node)
-        print("\nSolution Actions:")
-        for action in solution_actions:
-            print(action)
-
-        print("\nNumber of steps:", len(solution_actions))
-        print("Duration:", duration, "seconds")
-
-        self.assertEqual(len(solution_actions), len(solution_actions))
 
 if __name__ == '__main__':
     unittest.main()
