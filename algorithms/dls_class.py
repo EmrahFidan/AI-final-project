@@ -118,14 +118,17 @@ if __name__ == "__main__":
     puzzle = DlsPuzzle(initial_state, goal_state)
     puzzle.start_time = time.time()
 
-    limits = [44, 75639]
+    depth_limit = 0
+    step = 1
 
-    for depth_limit in limits:
+    while True:
         print(f"\nRunning Depth Limited Search with max depth limit: {depth_limit}\n")
         result = puzzle.depth_limit_search(depth_limit)
         exp_n, gen_n, pop_n, max_fs, soln_depth, soln_path = result
         if soln_path != -1:
             moves, cost = puzzle.track_solution_cost(soln_path)
             puzzle.print_styled(pop_n, exp_n, gen_n, max_fs, soln_depth, cost, moves)
-        else: 
-            print("Method could not find solution.")
+            break
+        else:
+            depth_limit += step
+            print(f"No solution found at depth limit: {depth_limit - step}, increasing limit to {depth_limit}")
